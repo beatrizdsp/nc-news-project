@@ -1,8 +1,9 @@
 const request = require('supertest')
-const app = require('../db/app/app.js')
-const seed = require('../db/seeds/seed.js')
+const app = require('../app/app')
+const seed = require('../db/seeds/seed')
 const db = require('../db/connection.js')
 const testData = require('../db/data/test-data/index.js')
+const listOfEndpoints = require('../endpoints.json')
 
 afterAll(()=>{
     db.end()
@@ -16,7 +17,12 @@ describe('GET /api',()=>{
     test('/api status 200: responds with the endpoint avaialble using the endpoints.json file',()=>{
         return request(app)
         .get('/api')
-        
+        .expect(200)
+        .then(({body})=>{
+            expect(body).toBeInstanceOf(Object);
+            expect(body).toHaveProperty('endpoints');
+            expect(body.endpoints).toEqual(listOfEndpoints);
+        })
     })
 })
 
