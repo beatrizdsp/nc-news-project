@@ -12,6 +12,20 @@ beforeEach(()=>{
     return seed(testData)
 })
 
+describe('GET /api',()=>{
+    test('/api status 200: responds with the endpoint avaialble using the endpoints.json file',()=>{
+        return request(app)
+        .get('/api')
+        .expect(200)
+        .then(({body})=>{
+            expect(body).toBeInstanceOf(Object)
+            expect(body).toHaveProperty('endpoints')
+        })
+
+    })
+})
+
+
 describe('GET/api/topics',()=>{
 test('status:200 responds with a 200 status code',()=>{
     return request(app)

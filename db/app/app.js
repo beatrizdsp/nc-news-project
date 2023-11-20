@@ -7,6 +7,7 @@ app.use(express.json())
 
 app.get('/api/topics', getTopics)
 
+
 app.all('*',handle404s)
 
 app.use(handleServerErrors)
