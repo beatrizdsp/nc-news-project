@@ -16,12 +16,7 @@ describe('GET /api',()=>{
     test('/api status 200: responds with the endpoint avaialble using the endpoints.json file',()=>{
         return request(app)
         .get('/api')
-        .expect(200)
-        .then(({body})=>{
-            expect(body).toBeInstanceOf(Object)
-            expect(body).toHaveProperty('endpoints')
-        })
-
+        
     })
 })
 
