@@ -6,9 +6,5 @@ exports.selectEndpoints = () =>{
         const parsedContent = JSON.parse(contents)
         return parsedContent
     })
-    .catch((err) => {
-        console.error('Error reading or parsing the file:', err);
-        throw new Error('Error reading or parsing the file');
-    });
     
 }
