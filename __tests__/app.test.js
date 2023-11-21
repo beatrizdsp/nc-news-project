@@ -101,7 +101,7 @@ describe('GET /api/artciles/:articleid',()=>{
             .get('/api/articles')
             .expect(200)
         })
-        test.only('GET: 200 returns a body of articles',()=>{
+        test('GET: 200 returns a body of articles',()=>{
             return request(app)
             .get('/api/articles')
             .then(({body})=>{
@@ -116,6 +116,15 @@ describe('GET /api/artciles/:articleid',()=>{
                     expect(typeof article.article_img_url).toBe('string')
                     expect(typeof article.comment_count).toBe('string')
                 })
+            })
+        })
+        test('/api/articles - tests are sorted by date by default',()=>{
+            return request(app)
+            .get('/api/articles')
+            .expect(200)
+            .then(({body})=>{
+                const {articles} = body
+                expect(articles).toBeSortedBy('created_at',{descending:true})
             })
         })
     })
