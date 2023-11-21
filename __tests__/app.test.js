@@ -86,4 +86,12 @@ describe('GET /api/artciles/:articleid',()=>{
             expect(body.msg).toBe('this article does not exist')
         })
     })
+    test('GET: 400 sends an 400 status and error message when given a invalid id',()=>{
+        return request(app)
+        .get('/api/articles/not-an-article')
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('Bad request')
+        })
+    })
 })
