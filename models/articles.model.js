@@ -9,6 +9,9 @@ exports.selectArticleById = (article_id) => {
     `)
     return db.query(queryString,[article_id])
     .then(({rows})=>{
-        return rows[0]
+        if(!rows.length){
+            return Promise.reject({status:404,msg:'this article does not exist'})
+        }
+        return rows
     })
 }

@@ -4,8 +4,13 @@ const {selectArticleById} = require('../models/articles.model')
 exports.getArticleById = (req,res,next) => {
     const {article_id} = req.params
     selectArticleById(article_id)
-    .then((article)=>{
-        res.status(200).send({article})
+    .then((articleById)=>{
+        console.log(articleById);
+        res.status(200).send({article:articleById})
+    })
+    .catch((err)=>{
+        console.log(err,'Article not found');
+        next(err)
     })
    
 }

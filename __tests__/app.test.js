@@ -54,7 +54,7 @@ test('Error 404: returns an error 404 for a route that does not exist',()=>{
     .get('/api/invalidpath')
     .expect(404)
     .then(({body})=>{
-        expect(body.msg).toBe('Page not found')
+        expect(body.msg).toBe('Not found')
     })
 })
 })
@@ -65,7 +65,7 @@ describe('GET /api/artciles/:articleid',()=>{
         .expect(200)
         .then(({body})=>{
             expect(body.article).toBeInstanceOf(Object)
-            expect(body.article).toMatchObject({
+            expect(body.article).toMatchObject([{
                 article_id : 9,
                 title: "They're not exactly dogs, are they?",
                 topic: "mitch",
@@ -75,7 +75,15 @@ describe('GET /api/artciles/:articleid',()=>{
                 votes: 0,
                 article_img_url:
                   "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
-            })
+            }])
+        })
+    })
+    test('GET: 404 sends an 404 status and error message when given a valid but non-existent id',()=>{
+        return request(app)
+        .get('/api/articles/999')
+        .expect(404)
+        .then(({body})=>{
+            expect(body.msg).toBe('this article does not exist')
         })
     })
 })
