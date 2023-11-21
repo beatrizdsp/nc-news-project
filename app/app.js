@@ -1,7 +1,8 @@
 const express = require('express')
 const{getTopics} = require('../controllers/topics.controller')
 const {getEndpoints} = require('../controllers/app.controller')
-const{handle404s,handleServerErrors} = require('../errors/errors')
+const {getArticleById} = require('../controllers/articles.controller')
+const{handle404s,handleServerErrors,handleCustomErrors,handlePsqErrors} = require('../errors/errors')
 
 const app = express()
 
@@ -9,7 +10,13 @@ app.get('/api',getEndpoints)
 
 app.get('/api/topics', getTopics)
 
+app.get('/api/articles/:article_id', getArticleById)
+
 app.all('*',handle404s)
+
+app.use(handlePsqErrors)
+
+app.use(handleCustomErrors)
 
 app.use(handleServerErrors)
 
