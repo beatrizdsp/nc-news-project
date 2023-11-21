@@ -4,6 +4,10 @@ exports.getArticles = (req,res,next) => {
     fetchArticles().then((articles)=>{
         res.status(200).send({articles:articles})
     })
+    .catch((err)=>{
+        console.log(err,'Error getting articles');
+        next(err)
+    })
 }
 
 exports.getArticleById = (req,res,next) => {
@@ -20,9 +24,12 @@ exports.getArticleById = (req,res,next) => {
 
 exports.getCommentsByArticleId = (req,res,next) => {
     const {article_id} = req.params
-    const {comments} = req.params
-    fetchCommentsById().then((comments)=>{
-        console.log(comments);
+    fetchCommentsById(article_id).then((comments)=>{
         res.status(200).send({comments})
+        console.log(comments)
+    })
+    .catch((err)=>{
+        console.log(err,'Article comments not found');
+        next(err)
     })
 }

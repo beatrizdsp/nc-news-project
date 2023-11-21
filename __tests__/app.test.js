@@ -130,9 +130,54 @@ describe('GET /api/artciles/:articleid',()=>{
     })
 })
 describe('GET /api/articles/:article_id/comments',()=>{
-    test('200: returns the comments of an given id, ordered by most recent first',()=>{
+    test('GET /api/articles/:article_id/comments - 200: returns an array of comments of an given id, ordered by most recent first',()=>{
     return request(app)
     .get('/api/articles/5/comments')
     .expect(200)
+    .then(({body})=>{
+        const {comments} = body
+        expect(comments).toBeInstanceOf(Array)
+        expect(comments).toBeSortedBy('created_at',{descending:true})
+    })
+})
+test('GET /api/articles/:article_id/comments - status 200: returns an array of comments for a given article-id with the correct properties',()=>{
+    return request(app)
+    .get('/api/articles/1/comments')
+    .expect(200)
+    .then(({body})=>{
+        const {comments} = body
+        comments.forEach((comment)=>{
+            expect(typeof comment.comment_id).toBe('number')
+            expect(typeof comment.votes).toBe('number')
+            expect(typeof comment.created_at).toBe('string')
+            expect(typeof comment.author).toBe('string')
+            expect(typeof comment.body).toBe('string')
+            expect(typeof comment.article_id).toBe('number')
+        })
+    })
+})
+test('GET /api/articles/:article_id/comments 404: sends an 404 status and error message when given a valid but non-existent id ',()=>{
+    return request(app)
+    .get('/api/articles/999/comments')
+    .expect(404)
+    .then(({body})=>{
+        expect(body.msg).toBe('not found')
+    })
+})
+test('GET /api/articles/:article_id/comments 400: sends an 400 status and error message when given a invalid id ',()=>{
+    return request(app)
+    .get('/api/articles/:not-an-id/comments')
+    .expect(400)
+    .then(({body})=>{
+        expect(body.msg).toBe('Bad request')
+    })
+})
+test('GET /api/articles/:article_id/comments 404: sends an 404 status and error message when given a valid id with no comments assigned to it',()=>{
+    return request(app)
+    .get('/api/articles/11/comments')
+    .expect(404)
+    .then(({body})=>{
+        expect(body.msg).toBe('not found')
+    })
 })
 })
