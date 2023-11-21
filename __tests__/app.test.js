@@ -94,12 +94,45 @@ describe('GET /api/artciles/:articleid',()=>{
             expect(body.msg).toBe('Bad request')
         })
     })
-})
 
+    describe('Get /api/articles',()=>{
+        test('GET: 200 sends an 200 status',()=>{
+            return request(app)
+            .get('/api/articles')
+            .expect(200)
+        })
+        test('GET: 200 returns a body of articles',()=>{
+            return request(app)
+            .get('/api/articles')
+            .then(({body})=>{
+                expect(body.articles).toHaveLength(13)
+                body.articles.forEach((article)=>{
+                    expect(typeof article.article_id).toBe('number');
+                    expect(typeof article.title).toBe('string');
+                    expect(typeof article.author).toBe('string');
+                    expect(typeof article.topic).toBe('string');
+                    expect(typeof article.created_at).toBe('string');
+                    expect(typeof article.votes).toBe('number')
+                    expect(typeof article.article_img_url).toBe('string')
+                    expect(typeof article.comment_count).toBe('string')
+                })
+            })
+        })
+        test('/api/articles - tests are sorted by date by default',()=>{
+            return request(app)
+            .get('/api/articles')
+            .expect(200)
+            .then(({body})=>{
+                const {articles} = body
+                expect(articles).toBeSortedBy('created_at',{descending:true})
+            })
+        })
+    })
+})
 describe('GET /api/articles/:article_id/comments',()=>{
     test('200: returns the comments of an given id, ordered by most recent first',()=>{
-        return request(app)
-        .get('/api/articles/5/comments')
-        .expect(200)
-    })
+    return request(app)
+    .get('/api/articles/5/comments')
+    .expect(200)
+})
 })
