@@ -43,3 +43,17 @@ test('Error 404: returns an error 404 for a route that does not exist',()=>{
     })
 })
 })
+// describe('GET /api/articles',()=>{
+//     test('200:responds with a 200 status code',()=>{
+//         return request(app)
+//         .get("/api/articles")
+//         .expect(200); 
+//     })
+//     test('200: responds with an array of article objects with an additional comment count',()=>{
+//         return request(app)
+//         .get('/api/articles')
+//         .then(({body})=>{
+//             expect(body.articles).toHaveLength(13)
+//         })
+//     })
+// })
