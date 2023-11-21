@@ -95,3 +95,11 @@ describe('GET /api/artciles/:articleid',()=>{
         })
     })
 })
+
+describe('GET /api/articles/:article_id/comments',()=>{
+    test('200: returns the comments of an given id, ordered by most recent first',()=>{
+        return request(app)
+        .get('/api/articles/5/comments')
+        .expect(200)
+    })
+})
