@@ -1,4 +1,5 @@
 const {selectArticleById,fetchCommentsById,fetchArticles} = require('../models/articles.model')
+const {checkExists} = require('../db/seeds/utils')
 
 exports.getArticles = (req,res,next) => {
     fetchArticles().then((articles)=>{
