@@ -1,4 +1,5 @@
 const {selectArticleById,fetchArticles, addCommentForArticle} = require('../models/articles.model')
+const {checkExists} = require('../db/seeds/utils')
 
 exports.getArticles = (req,res,next) => {
     fetchArticles().then((articles)=>{
@@ -15,10 +16,17 @@ exports.getArticleById = (req,res,next) => {
     .catch(next)
 }
 
-exports.postCommentByArticleId = (req,res,next)=>{
-    const {article_id} = req.params
-    const newComment = req.body
-    addCommentForArticle(article_id,newComment).then((comment)=>{
-        res.status(201).send({comment})
-    }).catch(next)
-}
+exports.postCommentByArticleId = (req, res, next) => {
+    const { article_id } = req.params;
+    // const { username} = req.body;
+    const newComment = req.body;
+
+    // checkExists('articles', 'article_id', article_id)
+    //     // .then(() => checkExists('users', 'username', username))
+    //     .then(() =>
+         addCommentForArticle(article_id, newComment)
+        .then((comment) => {
+            res.status(201).send({ comment });
+        })
+        .catch(next);
+};

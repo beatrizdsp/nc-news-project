@@ -172,16 +172,29 @@ describe('POST /api/articles/:article_id/comments',()=>{
         })
     })
     
-    // test('400 - /api/articles/:article_id/comments: returns 404 error for a comment with incorrect properties is posted',()=>{
+    test('400 - /api/articles/:article_id/comments: returns 400 error for a comment with incorrect properties is posted',()=>{
+        const newComment = {
+            username: 'icellusedkars'
+        }
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(newComment)
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('Bad request')
+        })
+    })
+    // test('404 - /api/articles/:article_id/comments: returns 404 error for a comment an invalid username',()=>{
     //     const newComment = {
-    //         username: 'icellusedkars'
+    //         username: 'fake_username',
+    //         body: 'this is a scammer'
     //     }
     //     return request(app)
     //     .post('/api/articles/2/comments')
     //     .send(newComment)
-    //     .expect(400)
+    //     .expect(404)
     //     .then(({body})=>{
-    //         expect(body.msg).toBe('invalid comment')
+    //         expect(body.msg).toBe('Not found')
     //     })
     // })
 })

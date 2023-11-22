@@ -47,7 +47,7 @@ exports.selectArticleById = (article_id) => {
 exports.addCommentForArticle = (article_id, newComment) => {
     const {username,body} = newComment
     if(!username || !body){
-        return Promise.reject({status:404, msg:'invalid comment'})
+        return Promise.reject({status:400, msg:'Bad request'})
     }
     const queryString = (`
     INSERT INTO comments
@@ -55,8 +55,9 @@ exports.addCommentForArticle = (article_id, newComment) => {
     VALUES ($1,$2,$3)
     RETURNING *
     `)
-    return db.query(queryString,[username,body,article_id])
-.then(({rows})=>{
+    return db
+    .query(queryString,[username,body,article_id])
+    .then(({rows})=>{
     return rows[0]
-})
+    })
 }
