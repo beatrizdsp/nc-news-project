@@ -197,4 +197,17 @@ describe('POST /api/articles/:article_id/comments',()=>{
             expect(body.msg).toBe('Not found')
         })
     })
+    test('400 - /api/articles/:article_id/comments: returns 400 error for an invalid article_id',()=>{
+        const newComment = {
+            username: 'icellusedkars',
+            body: 'This article is a disgrace'
+        }
+        return request(app)
+        .post('/api/articles/:not-an-id/comments')
+        .send(newComment)
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('Bad request')
+        })
+    })
 })
