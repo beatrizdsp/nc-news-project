@@ -1,4 +1,4 @@
-const {selectArticleById,fetchArticles} = require('../models/articles.model')
+const {selectArticleById,fetchArticles, addCommentForArticle} = require('../models/articles.model')
 
 exports.getArticles = (req,res,next) => {
     fetchArticles().then((articles)=>{
@@ -16,5 +16,12 @@ exports.getArticleById = (req,res,next) => {
         console.log(err,'Article not found');
         next(err)
     })
-   
+}
+
+exports.postCommentByArticleId = (req,res,next)=>{
+    const {article_id} = req.params
+    const newComment = req.body
+    addCommentForArticle(article_id,newComment).then((comment)=>{
+        res.status(201).send({comment})
+    })
 }

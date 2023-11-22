@@ -4,6 +4,7 @@ const seed = require('../db/seeds/seed')
 const db = require('../db/connection.js')
 const testData = require('../db/data/test-data/index.js')
 const listOfEndpoints = require('../endpoints.json')
+const { string } = require('pg-format')
 
 afterAll(()=>{
     db.end()
@@ -126,6 +127,28 @@ describe('GET /api/artciles/:articleid',()=>{
                 const {articles} = body
                 expect(articles).toBeSortedBy('created_at',{descending:true})
             })
+        })
+    })
+})
+
+describe('POST /api/articles/:article_id/comments',()=>{
+    test('201 - /api/articles/:article_id/comments: should add a new comment containing a username and body property in the object ',()=>{
+        const newComment = {
+            username: 'icellusedkars',
+            body: 'This article is a disgrace'
+        }
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(newComment)
+        .expect(201)
+        .then(({body})=>{
+            const {comment} = body
+            expect(typeof comment.comment_id).toBe('number')
+            expect(typeof comment.body).toBe('string')
+            expect(typeof comment.author).toBe('string')
+            expect(typeof comment.article_id).toBe('number')
+            expect(typeof comment.votes).toBe('number')
+            expect(typeof comment.created_at).toBe('string')
         })
     })
 })
