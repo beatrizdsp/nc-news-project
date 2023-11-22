@@ -23,8 +23,7 @@ exports.postCommentByArticleId = (req, res, next) => {
 
     checkExists('articles', 'article_id', article_id)
         .then(() => checkExists('users', 'username', username))
-        .then(() =>
-         addCommentForArticle(article_id, newComment))
+        .then(()=> addCommentForArticle(article_id, newComment))
         .then((comment) => {
             res.status(201).send({ comment });
         })
