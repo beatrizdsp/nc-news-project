@@ -146,6 +146,7 @@ test('GET /api/articles/:article_id/comments - status 200: returns an array of c
     .expect(200)
     .then(({body})=>{
         const {comments} = body
+        expect(comments).toHaveLength(11)
         comments.forEach((comment)=>{
             expect(typeof comment.comment_id).toBe('number')
             expect(typeof comment.votes).toBe('number')
@@ -161,7 +162,7 @@ test('GET /api/articles/:article_id/comments 404: sends an 404 status and error 
     .get('/api/articles/999/comments')
     .expect(404)
     .then(({body})=>{
-        expect(body.msg).toBe('not found')
+        expect(body.msg).toBe('Not found')
     })
 })
 test('GET /api/articles/:article_id/comments 400: sends an 400 status and error message when given a invalid id ',()=>{
@@ -172,12 +173,12 @@ test('GET /api/articles/:article_id/comments 400: sends an 400 status and error 
         expect(body.msg).toBe('Bad request')
     })
 })
-test('GET /api/articles/:article_id/comments 404: sends an 404 status and error message when given a valid id with no comments assigned to it',()=>{
+test('GET /api/articles/:article_id/comments 200: sends an 200 status when given a valid article id with no comments assigned ',()=>{
     return request(app)
     .get('/api/articles/11/comments')
-    .expect(404)
+    .expect(200)
     .then(({body})=>{
-        expect(body.msg).toBe('not found')
+        expect(body.comments).toEqual([])
     })
 })
 })
