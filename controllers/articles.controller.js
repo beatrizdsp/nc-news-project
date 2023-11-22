@@ -18,13 +18,13 @@ exports.getArticleById = (req,res,next) => {
 
 exports.postCommentByArticleId = (req, res, next) => {
     const { article_id } = req.params;
-    // const { username} = req.body;
+    const { username} = req.body;
     const newComment = req.body;
 
-    // checkExists('articles', 'article_id', article_id)
-    //     // .then(() => checkExists('users', 'username', username))
-    //     .then(() =>
-         addCommentForArticle(article_id, newComment)
+    checkExists('articles', 'article_id', article_id)
+        .then(() => checkExists('users', 'username', username))
+        .then(() =>
+         addCommentForArticle(article_id, newComment))
         .then((comment) => {
             res.status(201).send({ comment });
         })
