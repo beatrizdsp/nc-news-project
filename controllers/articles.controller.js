@@ -12,10 +12,7 @@ exports.getArticleById = (req,res,next) => {
     .then((articleById)=>{
         res.status(200).send({article:articleById})
     })
-    .catch((err)=>{
-        console.log(err,'Article not found');
-        next(err)
-    })
+    .catch(next)
 }
 
 exports.postCommentByArticleId = (req,res,next)=>{
@@ -23,5 +20,5 @@ exports.postCommentByArticleId = (req,res,next)=>{
     const newComment = req.body
     addCommentForArticle(article_id,newComment).then((comment)=>{
         res.status(201).send({comment})
-    })
+    }).catch(next)
 }

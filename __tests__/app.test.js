@@ -132,7 +132,7 @@ describe('GET /api/artciles/:articleid',()=>{
 })
 
 describe('POST /api/articles/:article_id/comments',()=>{
-    test('201 - /api/articles/:article_id/comments: should add a new comment containing a username and body property in the object ',()=>{
+    test('201 - /api/articles/:article_id/comments: should add a new comment ',()=>{
         const newComment = {
             username: 'icellusedkars',
             body: 'This article is a disgrace'
@@ -151,4 +151,37 @@ describe('POST /api/articles/:article_id/comments',()=>{
             expect(typeof comment.created_at).toBe('string')
         })
     })
+    test('201 - /api/articles/:article_id/comments: newComment should contain the correct author,comment_id and body values',()=>{
+        const newComment = {
+            username: 'icellusedkars',
+            body: 'This article is a disgrace'
+        }
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(newComment)
+        .expect(201)
+        .then(({body})=>{
+            const {comment} = body
+            expect(comment).toEqual(
+                expect.objectContaining({
+                    comment_id:19,
+                    author: 'icellusedkars',
+                    body: 'This article is a disgrace'
+                })
+            )
+        })
+    })
+    
+    // test('400 - /api/articles/:article_id/comments: returns 404 error for a comment with incorrect properties is posted',()=>{
+    //     const newComment = {
+    //         username: 'icellusedkars'
+    //     }
+    //     return request(app)
+    //     .post('/api/articles/2/comments')
+    //     .send(newComment)
+    //     .expect(400)
+    //     .then(({body})=>{
+    //         expect(body.msg).toBe('invalid comment')
+    //     })
+    // })
 })

@@ -46,6 +46,9 @@ exports.selectArticleById = (article_id) => {
 
 exports.addCommentForArticle = (article_id, newComment) => {
     const {username,body} = newComment
+    if(!username || !body){
+        return Promise.reject({status:404, msg:'invalid comment'})
+    }
     const queryString = (`
     INSERT INTO comments
     (author,body,article_id)
