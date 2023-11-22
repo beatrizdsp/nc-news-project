@@ -32,4 +32,5 @@ exports.checkExists = (table, column, value) => {
              return Promise.reject({ status: 404, msg: 'Not found' });
           }
       });
+      //clg
 };
