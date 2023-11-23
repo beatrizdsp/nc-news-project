@@ -214,7 +214,7 @@ describe('PATCH /api/articles/:article_id',()=>{
         })
     })
     test('202 should return an article where the votes have been updated when the existing votes are greater than 0',()=>{
-        const update = { inc_votes: 5 }
+        const update = { inc_votes: -200 }
         return request(app)
         .patch('/api/articles/1')
         .send(update)
@@ -229,7 +229,7 @@ describe('PATCH /api/articles/:article_id',()=>{
                 author: "butter_bridge",
                 body: "I find this existence challenging",
                 created_at: "2020-07-09T20:11:00.000Z",
-                votes: 105,
+                votes: -100,
                 article_img_url:
                   "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
               })
