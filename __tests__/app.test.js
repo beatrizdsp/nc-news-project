@@ -4,6 +4,7 @@ const seed = require('../db/seeds/seed')
 const db = require('../db/connection.js')
 const testData = require('../db/data/test-data/index.js')
 const listOfEndpoints = require('../endpoints.json')
+const { string } = require('pg-format')
 
 afterAll(()=>{
     db.end()
@@ -129,6 +130,7 @@ describe('GET /api/artciles/:articleid',()=>{
         })
     })
 })
+
 describe('GET /api/articles/:article_id/comments',()=>{
     test('GET /api/articles/:article_id/comments - 200: returns an array of comments of an given id, ordered by most recent first',()=>{
     return request(app)
@@ -182,3 +184,95 @@ test('GET /api/articles/:article_id/comments 200: sends an 200 status when given
     })
 })
 })
+describe('POST /api/articles/:article_id/comments',()=>{
+    test('201 - /api/articles/:article_id/comments: should add a new comment ',()=>{
+        const newComment = {
+            username: 'icellusedkars',
+            body: 'This article is a disgrace'
+        }
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(newComment)
+        .expect(201)
+        .then(({body})=>{
+            const {comment} = body
+            expect(typeof comment.comment_id).toBe('number')
+            expect(typeof comment.body).toBe('string')
+            expect(typeof comment.author).toBe('string')
+            expect(typeof comment.article_id).toBe('number')
+            expect(typeof comment.votes).toBe('number')
+            expect(typeof comment.created_at).toBe('string')
+        })
+    })
+    test('201 - /api/articles/:article_id/comments: newComment should contain the correct author,comment_id and body values',()=>{
+        const newComment = {
+            username: 'icellusedkars',
+            body: 'This article is a disgrace'
+        }
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(newComment)
+        .expect(201)
+        .then(({body})=>{
+            const {comment} = body
+            expect(comment).toEqual(
+                expect.objectContaining({
+                    comment_id:19,
+                    author: 'icellusedkars',
+                    body: 'This article is a disgrace'
+                })
+            )
+        })
+    })
+    
+    test('400 - /api/articles/:article_id/comments: returns 400 error for a comment with incorrect properties is posted',()=>{
+        const newComment = {
+            username: 'icellusedkars'
+        }
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(newComment)
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('Bad request')
+        })
+    })
+    test('404 - /api/articles/:article_id/comments: returns 404 error for a comment an invalid username',()=>{
+        const newComment = {
+            username: 'fake_username',
+            body: 'this is a scammer'
+        }
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(newComment)
+        .expect(404)
+        .then(({body})=>{
+            expect(body.msg).toBe('Not found')
+        })
+    })
+    test('400 - /api/articles/:article_id/comments: returns 400 error for an invalid article_id',()=>{
+        const newComment = {
+            username: 'icellusedkars',
+            body: 'This article is a disgrace'
+        }
+        return request(app)
+        .post('/api/articles/:not-an-id/comments')
+        .send(newComment)
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('Bad request')
+        })
+    })
+    test('404 - /api/articles/:article_id/comments: returns 404 error for a comment an invalid article_id',()=>{
+        const newComment = {
+            username: 'fake_username',
+            body: 'this is a scammer'
+        }
+        return request(app)
+        .post('/api/articles/999/comments')
+        .send(newComment)
+        .expect(404)
+        .then(({body})=>{
+            expect(body.msg).toBe('Not found')
+        })
+    })

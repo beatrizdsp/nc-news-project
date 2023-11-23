@@ -30,7 +30,6 @@ exports.fetchArticles = ()=>{
 }
 
 exports.selectArticleById = (article_id) => {
-
     queryString = (`
     SELECT * 
     FROM articles
@@ -45,6 +44,25 @@ exports.selectArticleById = (article_id) => {
     })
 }
 
+
+exports.addCommentForArticle = (article_id, newComment) => {
+    const {username,body} = newComment
+    if(!username || !body){
+        return Promise.reject({status:400, msg:'Bad request'})
+    }
+    const queryString = (`
+    INSERT INTO comments
+    (author,body,article_id)
+    VALUES ($1,$2,$3)
+    RETURNING *
+    `)
+    return db
+    .query(queryString,[username,body,article_id])
+    .then(({rows})=>{
+    return rows[0]
+    })
+    }
+
 exports.fetchCommentsById = (article_id)=>{
 
     return db.query(` SELECT * 
@@ -55,3 +73,5 @@ exports.fetchCommentsById = (article_id)=>{
         return rows
     })
 }
+    
+    
