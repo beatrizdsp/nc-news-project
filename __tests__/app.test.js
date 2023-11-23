@@ -182,3 +182,57 @@ test('GET /api/articles/:article_id/comments 200: sends an 200 status when given
     })
 })
 })
+
+describe('PATCH /api/articles/:article_id',()=>{
+    test('202 /api/articles/:article_id should return a 202 status',()=>{
+        const update = { inc_votes: 11 }
+        return request(app)
+        .patch('/api/articles/9')
+        .send(update)
+        .expect(202)
+    })
+    test('202 /api/articles/:article_id should update the votes of an article for a given id',()=>{
+        const update = { inc_votes: 11 }
+        return request(app)
+        .patch('/api/articles/9')
+        .send(update)
+        .expect(202)
+        .then(({body})=>{
+            const {article} = body
+            expect(article).toBeInstanceOf(Object)
+            expect(body.article).toMatchObject({
+                article_id : 9,
+                title: "They're not exactly dogs, are they?",
+                topic: "mitch",
+                author: "butter_bridge",
+                body: "Well? Think about it.",
+                created_at: '2020-06-06T09:10:00.000Z',
+                votes: 11,
+                article_img_url:
+                  "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+            })
+        })
+    })
+    test('202 should return an article where the votes have been updated when the existing votes are greater than 0',()=>{
+        const update = { inc_votes: 5 }
+        return request(app)
+        .patch('/api/articles/1')
+        .send(update)
+        .expect(202)
+        .then(({body})=>{
+            const {article} = body
+            expect(article).toBeInstanceOf(Object)
+            expect(body.article).toMatchObject({
+                article_id : 1,
+                title: "Living in the shadow of a great man",
+                topic: "mitch",
+                author: "butter_bridge",
+                body: "I find this existence challenging",
+                created_at: "2020-07-09T20:11:00.000Z",
+                votes: 105,
+                article_img_url:
+                  "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+              })
+        })
+    })
+})

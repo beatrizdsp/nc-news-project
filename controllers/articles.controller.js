@@ -1,4 +1,4 @@
-const {selectArticleById,fetchCommentsById,fetchArticles} = require('../models/articles.model')
+const {selectArticleById,fetchCommentsById,fetchArticles,updateArticleById} = require('../models/articles.model')
 const {checkExists} = require('../db/seeds/utils')
 
 exports.getArticles = (req,res,next) => {
@@ -27,5 +27,13 @@ exports.getCommentsByArticleId = (req,res,next) => {
         })
         })
     .catch(next)
+}
+
+exports.patchArticleById = (req,res,next) => {
+    const {article_id} = req.params
+    const{inc_votes}= req.body
+    updateArticleById(inc_votes,article_id).then((article)=>{
+        res.status(202).send({article})
+    })
 }
 
