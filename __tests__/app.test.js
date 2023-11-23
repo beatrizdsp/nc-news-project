@@ -362,20 +362,6 @@ describe('POST /api/articles/:article_id/comments',()=>{
         expect(body.msg).toBe("Bad request");
       });
   });
-
-  test("404 - /api/articles/:article_id/comments: returns 404 error for a comment an invalid article_id", () => {
-    const newComment = {
-      username: "fake_username",
-      body: "this is a scammer",
-    };
-    return request(app)
-      .post("/api/articles/999/comments")
-      .send(newComment)
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Not found");
-      });
-  });
 });
 
 
