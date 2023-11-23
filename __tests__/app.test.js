@@ -181,89 +181,105 @@ describe("GET /api/articles/:article_id/comments", () => {
   });
 });
 
-describe("POST /api/articles/:article_id/comments", () => {
-  test("201 - /api/articles/:article_id/comments: should add a new comment ", () => {
-    const newComment = {
-      username: "icellusedkars",
-      body: "This article is a disgrace",
-    };
-    return request(app)
-      .post("/api/articles/2/comments")
-      .send(newComment)
-      .expect(201)
-      .then(({ body }) => {
-        const { comment } = body;
-        expect(typeof comment.comment_id).toBe("number");
-        expect(typeof comment.body).toBe("string");
-        expect(typeof comment.author).toBe("string");
-        expect(typeof comment.article_id).toBe("number");
-        expect(typeof comment.votes).toBe("number");
-        expect(typeof comment.created_at).toBe("string");
-      });
-  });
-  test("201 - /api/articles/:article_id/comments: newComment should contain the correct author,comment_id and body values", () => {
-    const newComment = {
-      username: "icellusedkars",
-      body: "This article is a disgrace",
-    };
-    return request(app)
-      .post("/api/articles/2/comments")
-      .send(newComment)
-      .expect(201)
-      .then(({ body }) => {
-        const { comment } = body;
-        expect(comment).toEqual(
-          expect.objectContaining({
-            comment_id: 19,
-            author: "icellusedkars",
-            body: "This article is a disgrace",
-          })
-        );
-      });
-  });
 
-  test("400 - /api/articles/:article_id/comments: returns 400 error for a comment with incorrect properties is posted", () => {
-    const newComment = {
-      username: "icellusedkars",
-    };
-    return request(app)
-      .post("/api/articles/2/comments")
-      .send(newComment)
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Bad request");
-      });
-  });
-  test("404 - /api/articles/:article_id/comments: returns 404 error for a comment an invalid username", () => {
-    const newComment = {
-      username: "fake_username",
-      body: "this is a scammer",
-    };
-    return request(app)
-      .post("/api/articles/2/comments")
-      .send(newComment)
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Not found");
-      });
-  });
-  test("400 - /api/articles/:article_id/comments: returns 400 error for an invalid article_id", () => {
-    const newComment = {
-      username: "icellusedkars",
-      body: "This article is a disgrace",
-    };
-    return request(app)
-      .post("/api/articles/:not-an-id/comments")
-      .send(newComment)
 
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Bad request");
-      });
-  });
-});
+   
+describe('POST /api/articles/:article_id/comments',()=>{
+    test('201 - /api/articles/:article_id/comments: should add a new comment ',()=>{
+        const newComment = {
+            username: 'icellusedkars',
+            body: 'This article is a disgrace'
+        }
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(newComment)
+        .expect(201)
+        .then(({body})=>{
+            const {comment} = body
+            expect(typeof comment.comment_id).toBe('number')
+            expect(typeof comment.body).toBe('string')
+            expect(typeof comment.author).toBe('string')
+            expect(typeof comment.article_id).toBe('number')
+            expect(typeof comment.votes).toBe('number')
+            expect(typeof comment.created_at).toBe('string')
+        })
+    })
+    test('201 - /api/articles/:article_id/comments: newComment should contain the correct author,comment_id and body values',()=>{
+        const newComment = {
+            username: 'icellusedkars',
+            body: 'This article is a disgrace'
+        }
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(newComment)
+        .expect(201)
+        .then(({body})=>{
+            const {comment} = body
+            expect(comment).toEqual(
+                expect.objectContaining({
+                    comment_id:19,
+                    author: 'icellusedkars',
+                    body: 'This article is a disgrace'
+                })
+            )
+        })
+    })
+    
+    test('400 - /api/articles/:article_id/comments: returns 400 error for a comment with incorrect properties is posted',()=>{
+        const newComment = {
+            username: 'icellusedkars'
+        }
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(newComment)
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('Bad request')
+        })
+    })
+    test('404 - /api/articles/:article_id/comments: returns 404 error for a comment an invalid username',()=>{
+        const newComment = {
+            username: 'fake_username',
+            body: 'this is a scammer'
+        }
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(newComment)
+        .expect(404)
+        .then(({body})=>{
+            expect(body.msg).toBe('Not found')
+        })
+    })
+    test('400 - /api/articles/:article_id/comments: returns 400 error for an invalid article_id',()=>{
+        const newComment = {
+            username: 'icellusedkars',
+            body: 'This article is a disgrace'
+        }
+        return request(app)
+        .post('/api/articles/:not-an-id/comments')
+        .send(newComment)
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('Bad request')
+        })
+    })
+    test('404 - /api/articles/:article_id/comments: returns 404 error for a comment an invalid article_id',()=>{
+        const newComment = {
+            username: 'fake_username',
+            body: 'this is a scammer'
+        }
+        return request(app)
+        .post('/api/articles/999/comments')
+        .send(newComment)
+        .expect(404)
+        .then(({body})=>{
+            expect(body.msg).toBe('Not found')
+        })
+    })
+})
 
-describe("PATCH /api/articles/:article_id", () => {
+
+  describe("PATCH /api/articles/:article_id", () => {
   test("200 /api/articles/:article_id should return a 200 status", () => {
     const update = { inc_votes: 11 };
     return request(app).patch("/api/articles/9").send(update).expect(200);
@@ -361,3 +377,28 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 });
+
+
+describe('DELETE /api/comments/:comment_id',()=>{
+    test('DELETE 204 - shoudl return a 204 error for a given comment_id and no content',()=>{
+        return request(app)
+        .delete('/api/comments/3')
+        .expect(204)
+    })
+   test('DELETE 404 - should repsond with an appropriate status and error message when given an valid but non-existent id',()=>{
+    return request(app)
+    .delete('/api/comments/999')
+    .expect(404)
+    .then(({body})=>{
+        expect(body.msg).toBe('Not found')
+    })
+   })
+   test('DELETE 400 - should respond with an appropriate status and error message when given an invalid id',()=>{
+    return request(app)
+    .delete('/api/comments/comment-five')
+    .expect(400)
+    .then(({body})=>{
+        expect(body.msg).toBe('Bad request')
+    })
+   })
+})
