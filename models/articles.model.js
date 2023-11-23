@@ -57,6 +57,10 @@ exports.fetchCommentsById = (article_id)=>{
 }
 
 exports.updateArticleById = (inc_votes,article_id) =>{
+
+    if(!inc_votes){
+        return Promise.reject({status:400,msg:'Bad request'})
+    }
     queryString = (`
     UPDATE articles
     SET votes = votes + $1

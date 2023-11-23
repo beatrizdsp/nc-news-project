@@ -184,19 +184,19 @@ test('GET /api/articles/:article_id/comments 200: sends an 200 status when given
 })
 
 describe('PATCH /api/articles/:article_id',()=>{
-    test('202 /api/articles/:article_id should return a 202 status',()=>{
+    test('200 /api/articles/:article_id should return a 200 status',()=>{
         const update = { inc_votes: 11 }
         return request(app)
         .patch('/api/articles/9')
         .send(update)
-        .expect(202)
+        .expect(200)
     })
-    test('202 /api/articles/:article_id should update the votes of an article for a given id',()=>{
+    test('200 /api/articles/:article_id should update the votes of an article for a given id',()=>{
         const update = { inc_votes: 11 }
         return request(app)
         .patch('/api/articles/9')
         .send(update)
-        .expect(202)
+        .expect(200)
         .then(({body})=>{
             const {article} = body
             expect(article).toBeInstanceOf(Object)
@@ -213,12 +213,12 @@ describe('PATCH /api/articles/:article_id',()=>{
             })
         })
     })
-    test('202 should return an article where the votes have been updated when the existing votes are greater than 0',()=>{
+    test('200 should return an article where the votes have been updated when the existing votes are greater than 0',()=>{
         const update = { inc_votes: -200 }
         return request(app)
         .patch('/api/articles/1')
         .send(update)
-        .expect(202)
+        .expect(200)
         .then(({body})=>{
             const {article} = body
             expect(article).toBeInstanceOf(Object)
@@ -235,4 +235,45 @@ describe('PATCH /api/articles/:article_id',()=>{
               })
         })
     })
+    test('PATCH: 404 sends an 404 status and error message when given a valid but non-existent id',()=>{
+        const update = { inc_votes: 5 }
+        return request(app)
+        .patch('/api/articles/999')
+        .send(update)
+        .expect(404)
+        .then(({body})=>{
+            expect(body.msg).toBe('Not found')
+        })
+    })
+    test('PATCH: 400 sends an 400 status and error message when given a invalid id',()=>{
+        const update = { inc_votes: 5 }
+        return request(app)
+        .patch('/api/articles/-not-an-id')
+        .send(update)
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('Bad request')
+        })
+    })
+    test('PATCH: 400 sends an 400 status and error message when given a invalid data type in the object',()=>{
+        const update = { inc_votes: 'five' }
+        return request(app)
+        .patch('/api/articles/1')
+        .send(update)
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('Bad request')
+        })
+    })
+    test('PATCH: 400 sends an 400 status and error message when given an empty object as a body',()=>{
+        const update = {}
+        return request(app)
+        .patch('/api/articles/1')
+        .send(update)
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('Bad request')
+        })
+    })
+
 })

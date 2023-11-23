@@ -32,8 +32,12 @@ exports.getCommentsByArticleId = (req,res,next) => {
 exports.patchArticleById = (req,res,next) => {
     const {article_id} = req.params
     const{inc_votes}= req.body
-    updateArticleById(inc_votes,article_id).then((article)=>{
-        res.status(202).send({article})
-    })
+    
+    return checkExists('articles','article_id',article_id)
+    .then(()=> updateArticleById(inc_votes,article_id))
+    .then((article)=>{ 
+        res.status(200).send({article})
+        })
+    .catch(next)
 }
 
