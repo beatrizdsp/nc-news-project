@@ -1,5 +1,5 @@
 
-const {selectArticleById,fetchCommentsById,fetchArticles,,addCommentForArticle, updateArticleById} = require('../models/articles.model')
+const {selectArticleById,fetchCommentsById,fetchArticles,addCommentForArticle, updateArticleById} = require('../models/articles.model')
 
 const {checkExists} = require('../db/seeds/utils')
 
