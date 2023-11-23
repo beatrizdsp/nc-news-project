@@ -277,3 +277,10 @@ describe('POST /api/articles/:article_id/comments',()=>{
         })
     })
 })
+describe('DELETE /api/comments/:comment_id',()=>{
+    test('204 - shoudl return a 204 error for a given comment_id and no content',()=>{
+        return request(app)
+        .delete('/api/comments/3')
+        .expect(204)
+    })
+})
