@@ -278,10 +278,25 @@ describe('POST /api/articles/:article_id/comments',()=>{
     })
 })
 describe('DELETE /api/comments/:comment_id',()=>{
-    test('204 - shoudl return a 204 error for a given comment_id and no content',()=>{
+    test('DELETE 204 - shoudl return a 204 error for a given comment_id and no content',()=>{
         return request(app)
         .delete('/api/comments/3')
         .expect(204)
     })
-   
+   test('DELETE 404 - should repsond with an appropriate status and error message when given an valid but non-existent id',()=>{
+    return request(app)
+    .delete('/api/comments/999')
+    .expect(404)
+    .then(({body})=>{
+        expect(body.msg).toBe('Not found')
+    })
+   })
+   test('DELETE 400 - should respond with an appropriate status and error message when given an invalid id',()=>{
+    return request(app)
+    .delete('/api/comments/comment-five')
+    .expect(400)
+    .then(({body})=>{
+        expect(body.msg).toBe('Bad request')
+    })
+   })
 })
