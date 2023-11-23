@@ -99,7 +99,7 @@ describe("GET /api/artciles/:articleid", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.article).toBeInstanceOf(Object);
-        expect(body.article).toMatchObject([
+        expect(body.article).toMatchObject(
           {
             article_id: 9,
             title: "They're not exactly dogs, are they?",
@@ -111,7 +111,7 @@ describe("GET /api/artciles/:articleid", () => {
             article_img_url:
               "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
           },
-        ]);
+        );
       });
   });
   test("GET: 404 sends an 404 status and error message when given a valid but non-existent id", () => {
@@ -130,6 +130,31 @@ describe("GET /api/artciles/:articleid", () => {
         expect(body.msg).toBe("Bad request");
       });
   });
+})
+describe('UPDATED with comment_count GET /api/articles/:article_id',()=>{
+    test("should return a status 200 with an array for a given article id, including a comment_count property", () => {
+        return request(app)
+          .get("/api/articles/9")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.article).toBeInstanceOf(Object);
+            expect(body.article).toMatchObject(
+              {
+                article_id: 9,
+                title: "They're not exactly dogs, are they?",
+                topic: "mitch",
+                author: "butter_bridge",
+                body: "Well? Think about it.",
+                created_at: "2020-06-06T09:10:00.000Z",
+                votes: 0,
+                article_img_url:
+                  "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+                comment_count: '2'
+              },
+            );
+          });
+      });
+})
 
   describe("Get /api/articles", () => {
     test("GET: 200 sends an 200 status", () => {
@@ -162,7 +187,7 @@ describe("GET /api/artciles/:articleid", () => {
         });
     });
   });
-});
+
 
 describe("GET /api/articles/:article_id/comments", () => {
   test("GET /api/articles/:article_id/comments - 200: returns an array of comments of an given id, ordered by most recent first", () => {
