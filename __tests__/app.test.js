@@ -82,7 +82,14 @@ describe('GET /api/users',()=>{
             })
         })
     })
-    
+    test("GET 404 /api/users: returns an error 404 for a route that does not exist", () => {
+        return request(app)
+          .get("/api/use")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Not found");
+          });
+      });
 })
 
 describe("GET /api/artciles/:articleid", () => {
