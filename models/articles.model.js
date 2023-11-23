@@ -44,6 +44,7 @@ exports.selectArticleById = (article_id) => {
     })
 }
 
+
 exports.addCommentForArticle = (article_id, newComment) => {
     const {username,body} = newComment
     if(!username || !body){
@@ -60,4 +61,17 @@ exports.addCommentForArticle = (article_id, newComment) => {
     .then(({rows})=>{
     return rows[0]
     })
+    }
+
+exports.fetchCommentsById = (article_id)=>{
+
+    return db.query(` SELECT * 
+    FROM comments
+    WHERE article_id = $1
+    ORDER BY created_at DESC
+    `,[article_id]).then(({rows})=>{
+        return rows
+    })
 }
+    
+    
