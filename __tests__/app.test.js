@@ -55,6 +55,43 @@ describe("GET/api/topics", () => {
       });
   });
 });
+
+describe('GET /api/users',()=>{
+    test('GET 200 /api/users - should return a status 200 with a array of objects of all users',()=>{
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then(({body})=>{
+            const {users} = body
+            expect(users).toHaveLength(4)
+            expect(Array.isArray(users)).toBe(true)
+            expect(users[0]).toBeInstanceOf(Object)
+        })
+    })
+    test('GET 200 /api/users - should return a status 200 with an array of objects with properties of: username, name and avatar_url ',()=>{
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then(({body})=>{
+            const {users} = body
+            expect(users).toHaveLength(4)
+            users.forEach((user)=>{
+                expect(typeof user.username).toBe("string");
+            expect(typeof user.name).toBe("string");
+            expect(typeof user.avatar_url).toBe("string");
+            })
+        })
+    })
+    test("GET 404 /api/users: returns an error 404 for a route that does not exist", () => {
+        return request(app)
+          .get("/api/use")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Not found");
+          });
+      });
+})
+
 describe("GET /api/artciles/:articleid", () => {
   test("should return a status 200 with an array for a given article id", () => {
     return request(app)
