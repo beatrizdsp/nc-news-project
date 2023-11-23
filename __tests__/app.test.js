@@ -152,7 +152,7 @@ describe("GET /api/artciles/:articleid", () => {
           });
         });
     });
-    test("/api/articles - tests are sorted by date by default", () => {
+    test("GET 200 /api/articles - tests are sorted by date by default", () => {
       return request(app)
         .get("/api/articles")
         .expect(200)
@@ -162,6 +162,40 @@ describe("GET /api/artciles/:articleid", () => {
         });
     });
   });
+  test("GET 200 /api/articles/topic - returns an array of articles that fall under the given topic", () => {
+    return request(app)
+      .get("/api/articles")
+      .query('topic=mitch')
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toHaveLength(12);
+        articles.forEach((article)=>{
+            expect(article.topic).toEqual('mitch')
+        })
+      });
+  });
+  test("GET 200 /api/articles/topic - returns an empty array when that a topic contains no articles", () => {
+    return request(app)
+      .get("/api/articles")
+      .query('topic=paper')
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toHaveLength(0)
+        expect(articles).toEqual([])
+      });
+  });
+  test("GET 404 /api/articles/topic - sends an 404 status and error message when given a topic that does not exist", () => {
+    return request(app)
+      .get("/api/articles")
+      .query('topic=dog')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toEqual('Not found')
+      });
+  });
+
 });
 
 describe("GET /api/articles/:article_id/comments", () => {

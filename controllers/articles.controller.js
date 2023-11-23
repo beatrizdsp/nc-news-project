@@ -1,13 +1,24 @@
 
-const {selectArticleById,fetchCommentsById,fetchArticles,addCommentForArticle, updateArticleById} = require('../models/articles.model')
+const {selectArticleById,fetchArticles,fetchCommentsById, addCommentForArticle,updateArticleById} = require('../models/articles.model')
 
 const {checkExists} = require('../db/seeds/utils')
 
 exports.getArticles = (req,res,next) => {
-    fetchArticles().then((articles)=>{
-        res.status(200).send({articles:articles})
-    })
-    .catch(next)
+    const {topic} = req.query
+    if (topic){
+        checkExists('topics','slug',topic)
+        .then(()=>fetchArticles(topic))
+        .then((articles)=> res.status(200).send({articles})
+        )
+        .catch(next)
+    }else{
+        fetchArticles(topic)
+        .then((articles)=>{
+            res.status(200).send({articles})
+        })
+        .catch(next)
+
+    }
 }
 
 exports.getArticleById = (req,res,next) => {
@@ -32,8 +43,6 @@ exports.getCommentsByArticleId = (req,res,next) => {
     .catch(next)
 }
 
-
-
 exports.postCommentByArticleId = (req, res, next) => {
     const { article_id } = req.params;
     const { username} = req.body;
@@ -49,6 +58,7 @@ exports.postCommentByArticleId = (req, res, next) => {
 };
 
 exports.patchArticleById = (req,res,next) => {
+   
     const {article_id} = req.params
     const{inc_votes}= req.body
     
@@ -59,5 +69,3 @@ exports.patchArticleById = (req,res,next) => {
         })
     .catch(next)
 }
-
-

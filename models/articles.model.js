@@ -1,33 +1,44 @@
 const db = require('../db/connection')
 
-exports.fetchArticles = ()=>{
-    return db.query(`
+exports.fetchArticles = (topic) => {
+    let queryString = `
     SELECT 
-    articles.title,
-     articles.author,
-      articles.article_id,
-       articles.topic,
+        articles.title,
+        articles.author,
+        articles.article_id,
+        articles.topic,
         articles.created_at,
-         articles.votes,
-          articles.article_img_url,
-           COUNT(comments.article_id) AS comment_count 
+        articles.votes,
+        articles.article_img_url,
+        COUNT(comments.article_id) AS comment_count 
     FROM articles
     LEFT JOIN comments
-    ON articles.article_id = comments.article_id
+        ON articles.article_id = comments.article_id
+    `;
+
+    const queryValues = [];
+
+    if (topic) {
+        queryValues.push(topic);
+        queryString += `WHERE articles.topic = $1 `;
+    }
+
+    queryString += `
     GROUP BY
-    articles.title,
-     articles.author,
-      articles.article_id,
-       articles.topic,
+        articles.title,
+        articles.author,
+        articles.article_id,
+        articles.topic,
         articles.created_at,
-         articles.votes,
-          articles.article_img_url
-    ORDER BY articles.created_at DESC
-    `)
-    .then(({rows})=>{
-        return rows
-    })
-}
+        articles.votes,
+        articles.article_img_url
+    ORDER BY articles.created_at DESC`;
+
+    return db.query(queryString, queryValues)
+        .then(({ rows }) => {
+            return rows;
+        });
+};
 
 exports.selectArticleById = (article_id) => {
     queryString = (`
@@ -76,7 +87,7 @@ exports.fetchCommentsById = (article_id)=>{
 
 
 exports.updateArticleById = (inc_votes,article_id) =>{
-
+    
     if(!inc_votes){
         return Promise.reject({status:400,msg:'Bad request'})
     }
