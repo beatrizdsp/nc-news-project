@@ -154,6 +154,14 @@ describe('UPDATED with comment_count GET /api/articles/:article_id',()=>{
             );
           });
       });
+      test("should return a status 200 and with an article that a comment_count property", () => {
+        return request(app)
+          .get("/api/articles/9")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.article.comment_count).toBe('2');
+          });
+      });
 })
 
   describe("Get /api/articles", () => {
