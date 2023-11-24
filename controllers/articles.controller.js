@@ -4,6 +4,7 @@ const {selectArticleById,fetchArticles,fetchCommentsById, addCommentForArticle,u
 const {checkExists} = require('../db/seeds/utils')
 
 exports.getArticles = (req,res,next) => {
+
     const {topic} = req.query
     if (topic){
         fetchArticles(topic)
@@ -22,8 +23,8 @@ exports.getArticles = (req,res,next) => {
 exports.getArticleById = (req,res,next) => {
     const {article_id} = req.params
     selectArticleById(article_id)
-    .then((articleById)=>{
-        res.status(200).send({article:articleById})
+    .then((article)=>{
+        res.status(200).send({article})
     })
     .catch(next)
 }
