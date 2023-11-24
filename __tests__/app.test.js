@@ -293,6 +293,48 @@ describe("GET /api/artciles/:articleid", () => {
         expect(articles).toBeSortedBy('created_at')
       });
   });
+  test("GET /api/articles/?order=ASC", () => {
+    return request(app)
+      .get("/api/articles?order=ASC")
+      .expect(200)
+      .then(({ body }) => {
+        const {articles} = body
+        expect(articles).toHaveLength(13)
+        expect(articles).toBeSortedBy('created_at')
+      });
+  });
+  test("GET 404 /api/articles?sort_by - sends an 404 status and error message when given a sort_by that does not exist", () => {
+    return request(app)
+      .get("/api/articles?sort_by=dog")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toEqual('Not found')
+      });
+  });
+  test("GET 404 /api/articles?order - sends an 404 status and error message when given an order that does not exist", () => {
+    return request(app)
+      .get("/api/articles?order=ascending")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toEqual('Not found')
+      });
+  });
+  test("GET 404 /api/articles?topic&&order(2 parameters) - sends an 404 status and error message when any of the given parameters does not exist", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch&&order=ascending")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toEqual('Not found')
+      });
+  });
+  test("GET 404 /api/articles?order (3 parameters) - sends an 404 status and error message when any of the given parameters does not exist", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch&&sort_by=article&&order=ASC")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toEqual('Not found')
+      });
+  });
 });
 
 describe("GET /api/articles/:article_id/comments", () => {

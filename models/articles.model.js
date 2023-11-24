@@ -15,10 +15,11 @@ exports.fetchArticles = (topic, sort_by = 'created_at', order = 'DESC') => {
   ];
   const allowedOrders = ['ASC', 'DESC'];
   if (!allowedSortBys.includes(sort_by)) {
-    return Promise.reject({ err: 400, msg: "Bad request" });
+    return Promise.reject({ status: 404, msg: "Not found" });
+
   }
   if (!allowedOrders.includes(order)) {
-    return Promise.reject({ err: 400, msg: "Bad request" });
+    return Promise.reject({ status: 404, msg: "Not found" });
   }
 
   let queryString = `
