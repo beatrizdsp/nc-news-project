@@ -6,10 +6,8 @@ const {checkExists} = require('../db/seeds/utils')
 exports.getArticles = (req,res,next) => {
     const {topic} = req.query
     if (topic){
-        checkExists('topics','slug',topic)
-        .then(()=>fetchArticles(topic))
-        .then((articles)=> res.status(200).send({articles})
-        )
+        fetchArticles(topic)
+        .then((articles)=> res.status(200).send({articles}))
         .catch(next)
     }else{
         fetchArticles()

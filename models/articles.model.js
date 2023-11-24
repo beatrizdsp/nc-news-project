@@ -1,5 +1,8 @@
 const db = require('../db/connection')
 
+const {checkExists} = require('../db/seeds/utils')
+
+
 exports.fetchArticles = (topic) => {
     let queryString = `
     SELECT 
@@ -18,13 +21,20 @@ exports.fetchArticles = (topic) => {
 
     const queryValues = [];
 
-    if (topic) {
-        queryValues.push(topic);
-        queryString += `WHERE articles.topic = $1 `;
+    const processTopic = ()=>{
+        if (topic) {
+           return checkExists('topics','slug',topic)
+            .then(()=>
+            queryString += `WHERE articles.topic = $1 `
+            ).then(()=>{
+            queryValues.push(topic)
+            })
+        }
+        return Promise.resolve()
     }
-
-    queryString += `
-    GROUP BY
+    return processTopic().then(()=>{
+        queryString += `
+        GROUP BY
         articles.title,
         articles.author,
         articles.article_id,
@@ -32,13 +42,18 @@ exports.fetchArticles = (topic) => {
         articles.created_at,
         articles.votes,
         articles.article_img_url
-    ORDER BY articles.created_at DESC`;
+        ORDER BY articles.created_at DESC`;
+    }).then(()=>{
+        return db.query(queryString, queryValues)
+        
+    })
+    .then(({ rows }) => {
+        return rows;
+    });
+}
 
-    return db.query(queryString, queryValues)
-        .then(({ rows }) => {
-            return rows;
-        });
-};
+
+
 
 exports.selectArticleById = (article_id) => {
     queryString = (`
