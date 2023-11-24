@@ -4,19 +4,10 @@ const {selectArticleById,fetchArticles,fetchCommentsById, addCommentForArticle,u
 const {checkExists} = require('../db/seeds/utils')
 
 exports.getArticles = (req,res,next) => {
-    const {topic} = req.query
-    if (topic){
-        fetchArticles(topic)
+    const {topic,sort_by,order} = req.query
+        fetchArticles(topic,sort_by,order)
         .then((articles)=> res.status(200).send({articles}))
         .catch(next)
-    }else{
-        fetchArticles()
-        .then((articles)=>{
-            res.status(200).send({articles})
-        })
-        .catch(next)
-
-    }
 }
 
 exports.getArticleById = (req,res,next) => {
