@@ -61,21 +61,24 @@ exports.fetchArticles = (topic, sort_by = 'created_at', order = 'DESC') => {
 };
 
 exports.selectArticleById = (article_id) => {
-  queryString = `
-    SELECT * 
+    queryString = (`
+    SELECT 
+    articles.*, 
+    COUNT(comment_id) AS comment_count
     FROM articles
-    WHERE article_id = $1
-    `;
-  return db.query(queryString, [article_id]).then(({ rows }) => {
-    if (!rows.length) {
-      return Promise.reject({
-        status: 404,
-        msg: "this article does not exist",
-      });
-    }
-    return rows;
-  });
-};
+    LEFT JOIN comments
+    ON articles.article_id = comments.article_id
+    WHERE articles.article_id = $1
+    GROUP BY articles.article_id;
+    `)
+    return db.query(queryString,[article_id])
+    .then(({rows})=>{
+        if(!rows.length){
+            return Promise.reject({status:404, msg:'this article does not exist'})
+        }
+        return rows[0]
+    })
+}
 
 exports.addCommentForArticle = (article_id, newComment) => {
   const { username, body } = newComment;
