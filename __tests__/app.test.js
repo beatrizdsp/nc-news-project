@@ -211,8 +211,7 @@ describe('UPDATED with comment_count GET /api/articles/:article_id',()=>{
   });
   test("GET 200 /api/articles/topic - returns an empty array when that a topic contains no articles", () => {
     return request(app)
-      .get("/api/articles")
-      .query('topic=paper')
+      .get("/api/articles?topic=paper")
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
@@ -222,14 +221,155 @@ describe('UPDATED with comment_count GET /api/articles/:article_id',()=>{
   });
   test("GET 404 /api/articles/topic - sends an 404 status and error message when given a topic that does not exist", () => {
     return request(app)
-      .get("/api/articles")
-      .query('topic=dog')
+      .get("/api/articles?topic=dog")
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toEqual('Not found')
       });
   });
-
+  test("GET /api/articles/?sort_by=title", () => {
+    return request(app)
+      .get("/api/articles?sort_by=title")
+      .expect(200)
+      .then(({ body }) => {
+        const {articles} = body
+        expect(articles).toHaveLength(13)
+        expect(articles).toBeSortedBy('title',{descending:true})
+      });
+  });
+  test("GET /api/articles/?sort_by=author", () => {
+    return request(app)
+      .get("/api/articles?sort_by=author")
+      .expect(200)
+      .then(({ body }) => {
+        const {articles} = body
+        expect(articles).toHaveLength(13)
+        expect(articles).toBeSortedBy('author',{descending:true})
+      });
+  });
+  test("GET /api/articles/?sort_by=article_id", () => {
+    return request(app)
+      .get("/api/articles?sort_by=article_id")
+      .expect(200)
+      .then(({ body }) => {
+        const {articles} = body
+        expect(articles).toHaveLength(13)
+        expect(articles).toBeSortedBy('article_id',{descending:true})
+      });
+  });
+  test("GET /api/articles/?sort_by=topic", () => {
+    return request(app)
+      .get("/api/articles?sort_by=topic")
+      .expect(200)
+      .then(({ body }) => {
+        const {articles} = body
+        expect(articles).toHaveLength(13)
+        expect(articles).toBeSortedBy('topic',{descending:true})
+      });
+  });
+  test("GET /api/articles/?sort_by=created_at", () => {
+    return request(app)
+      .get("/api/articles?sort_by=created_at")
+      .expect(200)
+      .then(({ body }) => {
+        const {articles} = body
+        expect(articles).toHaveLength(13)
+        expect(articles).toBeSortedBy('created_at',{descending:true})
+      });
+  });
+  test("GET /api/articles/?sort_by=votes", () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes")
+      .expect(200)
+      .then(({ body }) => {
+        const {articles} = body
+        expect(articles).toHaveLength(13)
+        expect(articles).toBeSortedBy('votes',{descending:true})
+      });
+  });
+  test("GET /api/articles/?sort_by=article_img_url", () => {
+    return request(app)
+      .get("/api/articles?sort_by=article_img_url")
+      .expect(200)
+      .then(({ body }) => {
+        const {articles} = body
+        expect(articles).toHaveLength(13)
+        expect(articles).toBeSortedBy('article_img_url',{descending:true})
+      });
+  });
+  test("GET /api/articles/?sort_by=comment_count", () => {
+    return request(app)
+      .get("/api/articles?sort_by=comment_count")
+      .expect(200)
+      .then(({ body }) => {
+        const {articles} = body
+        expect(articles).toHaveLength(13)
+        expect(articles).toBeSortedBy('comment_count',{descending:true, coerce:true})
+      });
+  });
+  test("GET /api/articles/?order=DESC", () => {
+    return request(app)
+      .get("/api/articles?order=DESC")
+      .expect(200)
+      .then(({ body }) => {
+        const {articles} = body
+        expect(articles).toHaveLength(13)
+        expect(articles).toBeSortedBy('created_at',{descending:true})
+      });
+  });
+  test("GET /api/articles/?order=ASC", () => {
+    return request(app)
+      .get("/api/articles?order=ASC")
+      .expect(200)
+      .then(({ body }) => {
+        const {articles} = body
+        expect(articles).toHaveLength(13)
+        expect(articles).toBeSortedBy('created_at')
+      });
+  });
+  test("GET /api/articles/?order=ASC", () => {
+    return request(app)
+      .get("/api/articles?order=ASC")
+      .expect(200)
+      .then(({ body }) => {
+        const {articles} = body
+        expect(articles).toHaveLength(13)
+        expect(articles).toBeSortedBy('created_at')
+      });
+  });
+  test("GET 404 /api/articles?sort_by - sends an 404 status and error message when given a sort_by that does not exist", () => {
+    return request(app)
+      .get("/api/articles?sort_by=dog")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toEqual('Not found')
+      });
+  });
+  test("GET 404 /api/articles?order - sends an 404 status and error message when given an order that does not exist", () => {
+    return request(app)
+      .get("/api/articles?order=ascending")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toEqual('Not found')
+      });
+  });
+  test("GET 404 /api/articles?topic&&order(2 parameters) - sends an 404 status and error message when any of the given parameters does not exist", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch&&order=ascending")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toEqual('Not found')
+      });
+  });
+  test("GET 404 /api/articles?order (3 parameters) - sends an 404 status and error message when any of the given parameters does not exist", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch&&sort_by=article&&order=ASC")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toEqual('Not found')
+      });
+  });
+})
 
 describe("GET /api/articles/:article_id/comments", () => {
   test("GET /api/articles/:article_id/comments - 200: returns an array of comments of an given id, ordered by most recent first", () => {
