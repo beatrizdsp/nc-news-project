@@ -369,7 +369,6 @@ describe('UPDATED with comment_count GET /api/articles/:article_id',()=>{
         expect(body.msg).toEqual('Not found')
       });
   });
-})
 
 describe("GET /api/articles/:article_id/comments", () => {
   test("GET /api/articles/:article_id/comments - 200: returns an array of comments of an given id, ordered by most recent first", () => {
