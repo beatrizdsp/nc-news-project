@@ -17,7 +17,7 @@ exports.handleCustomErrors = (err,req,res,next)=>{
 }
 exports.handle404s = (req,res) =>{
     
-res.status(404).send({msg: 'Not found'}).next(err)
+res.status(404).send({msg: 'Not found'})
 }
 
 
